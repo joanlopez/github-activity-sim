@@ -7,7 +7,7 @@ import (
 	"github.com/shurcooL/githubv4"
 )
 
-func (c Client) GetLastBranchReference(ctx context.Context, branch string) (string, error) {
+func (c *Client) GetLastBranchReference(ctx context.Context, branch string) (string, error) {
 	var q struct {
 		Repository struct {
 			Refs struct {

@@ -21,8 +21,8 @@ type Client struct {
 	http *github.Client
 }
 
-func NewClient(ctx context.Context, name, owner, defBranch string, oauth2 *http.Client) (Client, error) {
-	client := Client{
+func NewClient(ctx context.Context, name, owner, defBranch string, oauth2 *http.Client) (*Client, error) {
+	client := &Client{
 		repoName:  name,
 		repoOwner: owner,
 		defBranch: defBranch,
@@ -32,13 +32,13 @@ func NewClient(ctx context.Context, name, owner, defBranch string, oauth2 *http.
 	}
 
 	if err := client.init(ctx); err != nil {
-		return Client{}, err
+		return nil, err
 	}
 
 	return client, nil
 }
 
-func (c Client) init(ctx context.Context) error {
+func (c *Client) init(ctx context.Context) error {
 	var q struct {
 		Repository struct {
 			Id               string

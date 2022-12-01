@@ -7,7 +7,7 @@ import (
 	"github.com/shurcooL/githubv4"
 )
 
-func (c Client) CreateCommit(ctx context.Context, branch, msg string) error {
+func (c *Client) CreateCommit(ctx context.Context, branch, msg string) error {
 	if _, ok := c.lastOid[branch]; !ok {
 		if _, err := c.GetLastBranchReference(ctx, branch); err != nil {
 			return err

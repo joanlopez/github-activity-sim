@@ -8,7 +8,7 @@ import (
 	"github.com/google/go-github/v48/github"
 )
 
-func (c Client) CreateBranch(ctx context.Context, branch string) error {
+func (c *Client) CreateBranch(ctx context.Context, branch string) error {
 	_, _, err := c.http.Git.CreateRef(
 		ctx,
 		c.repoOwner,
@@ -21,7 +21,7 @@ func (c Client) CreateBranch(ctx context.Context, branch string) error {
 		})
 
 	if err != nil {
-		if c.isBranchAlreadyExistsErr(err) {
+		if isBranchAlreadyExistsErr(err) {
 			if _, err := c.GetLastBranchReference(ctx, branch); err != nil {
 				return err
 			}
@@ -36,7 +36,7 @@ func (c Client) CreateBranch(ctx context.Context, branch string) error {
 	return nil
 }
 
-func (c Client) isBranchAlreadyExistsErr(err error) bool {
+func isBranchAlreadyExistsErr(err error) bool {
 	var errRes *github.ErrorResponse
 	return errors.As(err, &errRes) &&
 		errRes.Response.StatusCode == http.StatusUnprocessableEntity &&
