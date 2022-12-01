@@ -9,7 +9,7 @@ import (
 	"github.com/shurcooL/githubv4"
 )
 
-func (c *Client) CreatePullRequest(ctx context.Context, title, from string, to ...string) (PullRequest, error) {
+func (c *Client) CreatePullRequest(ctx context.Context, title, body, from string, to ...string) (PullRequest, error) {
 	if len(to) > 1 {
 		return PullRequest{}, errors.New("single base ref supported")
 	}
@@ -30,6 +30,7 @@ func (c *Client) CreatePullRequest(ctx context.Context, title, from string, to .
 		BaseRefName:  githubv4.String(baseRef),
 		HeadRefName:  githubv4.String(from),
 		Title:        githubv4.String(title),
+		Body:         githubv4.NewString(githubv4.String(body)),
 	}
 
 	err := c.gql.Mutate(ctx, &m, input, nil)
