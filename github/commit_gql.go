@@ -41,6 +41,7 @@ func (c *Client) CreateCommit(ctx context.Context, branch, msg string) error {
 
 	err := c.gql.Mutate(ctx, &m, input, nil)
 	if err != nil {
+		fmt.Printf("Commit creation failed; err: %s\n", err.Error())
 		return err
 	}
 

@@ -38,5 +38,5 @@ func (c *Client) GetLastBranchReference(ctx context.Context, branch string) (str
 	lastOid := q.Repository.Refs.Edges[0].Node.Target.Oid
 	c.lastOid[branch] = lastOid
 	fmt.Printf("Branch successfully fetched; oid: %s\n", lastOid)
-	return lastOid, err
+	return lastOid, nil
 }
