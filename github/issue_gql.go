@@ -5,12 +5,14 @@ import (
 	"fmt"
 
 	"github.com/shurcooL/githubv4"
+
+	simulator "github.com/joanlopez/github-activity-sim"
 )
 
-func (c *Client) CreateIssue(ctx context.Context, title, body string) (Issue, error) {
+func (c *Client) CreateIssue(ctx context.Context, title, body string) (simulator.Issue, error) {
 	var m struct {
 		CreateIssue struct {
-			Issue Issue
+			Issue simulator.Issue
 		} `graphql:"createIssue(input: $input)"`
 	}
 
@@ -23,7 +25,7 @@ func (c *Client) CreateIssue(ctx context.Context, title, body string) (Issue, er
 	err := c.gql.Mutate(ctx, &m, input, nil)
 	if err != nil {
 		fmt.Printf("Issue creation failed; err: %s\n", err.Error())
-		return Issue{}, err
+		return simulator.Issue{}, err
 	}
 
 	issueId := m.CreateIssue.Issue.Id

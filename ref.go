@@ -1,4 +1,4 @@
-package github
+package simulator
 
 type Ref struct {
 	Id   string

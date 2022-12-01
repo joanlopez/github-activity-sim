@@ -1,4 +1,4 @@
-package github
+package simulator
 
 type PullRequest struct {
 	Id      string

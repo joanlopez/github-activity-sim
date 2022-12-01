@@ -1,4 +1,4 @@
-package github
+package simulator
 
 type Issue struct {
 	Id    string

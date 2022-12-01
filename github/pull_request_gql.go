@@ -7,16 +7,18 @@ import (
 	"strings"
 
 	"github.com/shurcooL/githubv4"
+
+	simulator "github.com/joanlopez/github-activity-sim"
 )
 
-func (c *Client) CreatePullRequest(ctx context.Context, title, body, from string, to ...string) (PullRequest, error) {
+func (c *Client) CreatePullRequest(ctx context.Context, title, body, from string, to ...string) (simulator.PullRequest, error) {
 	if len(to) > 1 {
-		return PullRequest{}, errors.New("single base ref supported")
+		return simulator.PullRequest{}, errors.New("single base ref supported")
 	}
 
 	var m struct {
 		CreatePullRequest struct {
-			PullRequest PullRequest
+			PullRequest simulator.PullRequest
 		} `graphql:"createPullRequest(input: $input)"`
 	}
 
@@ -39,11 +41,11 @@ func (c *Client) CreatePullRequest(ctx context.Context, title, body, from string
 		if isPullRequestAlreadyExistsErr(err) {
 			pr, err := c.GetPullRequest(ctx, from, to...)
 			if err != nil {
-				return PullRequest{}, err
+				return simulator.PullRequest{}, err
 			}
 			return pr, nil
 		}
-		return PullRequest{}, err
+		return simulator.PullRequest{}, err
 	}
 
 	pullRequestId := m.CreatePullRequest.PullRequest.Id
@@ -51,16 +53,16 @@ func (c *Client) CreatePullRequest(ctx context.Context, title, body, from string
 	return m.CreatePullRequest.PullRequest, nil
 }
 
-func (c *Client) GetPullRequest(ctx context.Context, from string, to ...string) (PullRequest, error) {
+func (c *Client) GetPullRequest(ctx context.Context, from string, to ...string) (simulator.PullRequest, error) {
 	if len(to) > 1 {
-		return PullRequest{}, errors.New("single base ref supported")
+		return simulator.PullRequest{}, errors.New("single base ref supported")
 	}
 
 	var q struct {
 		Repository struct {
 			PullRequests struct {
 				Edges []struct {
-					Node PullRequest
+					Node simulator.PullRequest
 				}
 			} `graphql:"pullRequests(first: 1, baseRefName: $baseRef, headRefName: $headRef)"`
 		} `graphql:"repository(owner: $owner, name: $name)"`
@@ -81,7 +83,7 @@ func (c *Client) GetPullRequest(ctx context.Context, from string, to ...string) 
 	err := c.gql.Query(ctx, &q, variables)
 	if err != nil {
 		fmt.Printf("Pul request fetching failed; err: %s\n", err.Error())
-		return PullRequest{}, err
+		return simulator.PullRequest{}, err
 	}
 
 	pullRequestId := q.Repository.PullRequests.Edges[0].Node.Id
